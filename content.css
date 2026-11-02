@@ -49,3 +49,5 @@ footer{padding-bottom:35px!important;font-size:14px;color:var(--muted)}
 @media(max-width:480px){html{scroll-padding-top:150px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 
+
+.facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.facts div{padding:18px;border:1px solid var(--line);border-radius:12px}.facts dt{font-weight:700}.facts dd{margin:8px 0 0}@media(max-width:600px){.facts{grid-template-columns:1fr}}
