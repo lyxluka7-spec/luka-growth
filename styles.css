@@ -341,3 +341,6 @@ details p { margin-top: 14px; }
 }
 
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+.stage-entry .case-grid article{display:flex;flex-direction:column;align-items:flex-start}.stage-entry .case-grid article .btn{margin-top:auto;white-space:normal;max-width:100%;text-align:left}
+.stage-entry .case-grid{grid-template-columns:repeat(3,minmax(0,1fr))}@media(max-width:980px){.stage-entry .case-grid{grid-template-columns:1fr}}
