@@ -1,0 +1,29 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>Luka local QA</title></head><body><pre id="report">RUNNING</pre><iframe title="Test page" id="frame" style="width:375px;height:900px;border:0"></iframe><script>
+(async () => {
+const report=document.getElementById('report'), frame=document.getElementById('frame'), results=[];
+function check(name,condition){results.push({name,pass:!!condition});if(!condition)throw new Error(name)}
+async function load(path){await new Promise((resolve,reject)=>{frame.onload=resolve;frame.onerror=reject;frame.src=path});return frame.contentWindow}
+function set(w,id,v){const el=w.document.getElementById(id);el.value=v;el.dispatchEvent(new w.Event('input',{bubbles:true}));el.dispatchEvent(new w.Event('change',{bubbles:true}))}
+try {
+let w=await load('/tools/export-budget.html'), api=w.LukaWorksheets;
+check('blank is unknown',api.cents('')===null);
+check('explicit zero is known',api.cents('0')===0n);
+check('decimal math is exact',api.cents('0.10')+api.cents('0.20')===30n);
+for(const invalid of ['-1','1e3','1,200','1.234','NaN','Infinity','1000000000000']){let rejected=false;try{api.cents(invalid)}catch(e){rejected=true}check('reject '+invalid,rejected)}
+let sum=api.summarize([{currency:'CNY',planned:'',confirmed:'100.10',paid:'30.05'},{currency:'USD',planned:'5',confirmed:'',paid:'0'}]);check('separate currencies',sum.includes('CNY')&&sum.includes('USD'));check('exact balance',sum.includes('70.05'));check('unknown stays visible',sum.includes('待确认'));
+let rejected=false;try{api.summarize([{currency:'CNY',planned:'',confirmed:'1',paid:'2'}])}catch(e){rejected=true}check('overpayment blocked',rejected);
+set(w,'cost-1-item','样品');set(w,'cost-1-confirmed','100.10');set(w,'cost-1-paid','30.05');w.document.getElementById('worksheet').requestSubmit();check('UI generates budget',w.document.getElementById('result-text').value.includes('70.05'));
+set(w,'cost-1-paid','');w.document.getElementById('worksheet').requestSubmit();check('blank payment not zero',w.document.getElementById('result-text').value.includes('可确认待付：待确认'));
+w.document.getElementById('add-cost').click();check('add cost',w.document.querySelectorAll('.cost-item').length===2);w.document.querySelectorAll('.cost-item .copy')[1].click();check('remove empty cost',w.document.querySelectorAll('.cost-item').length===1);
+set(w,'cost-1-paid','200');w.document.getElementById('worksheet').requestSubmit();check('invalid budget hides stale output',w.document.getElementById('result').hidden);check('invalid budget explains failure',w.document.getElementById('tool-status').textContent.includes('已付超过'));
+set(w,'cost-1-paid','20');w.document.getElementById('worksheet').requestSubmit();check('can recover from error',!w.document.getElementById('result').hidden);
+w=await load('/tools/export-readiness.html');set(w,'product','<img src=x onerror=alert(1)>测试产品');set(w,'next','补产品参数');w.document.getElementById('worksheet').requestSubmit();check('user text remains literal',w.document.getElementById('result-text').value.includes('<img src=x onerror=alert(1)>'));check('no injected image',!w.document.querySelector('#result img'));check('missing fields listed',w.document.getElementById('result-text').value.includes('尚待补充'));
+let exported;w.URL.createObjectURL=b=>{exported=b;return 'blob:test'};w.HTMLAnchorElement.prototype.click=function(){};w.document.getElementById('download').click();check('download contains filled record',(await exported.text()).includes('补产品参数'));
+let printed=false;w.print=()=>{printed=true};w.document.getElementById('print-result').click();check('print contains record',printed&&w.document.getElementById('print-text').textContent.includes('补产品参数'));
+Object.defineProperty(w.navigator,'clipboard',{value:{writeText:()=>Promise.reject(new Error('blocked'))},configurable:true});w.document.getElementById('copy-result').click();await new Promise(r=>setTimeout(r,10));check('clipboard failure has fallback',w.document.getElementById('tool-status').textContent.includes('自动复制不可用'));
+w=await load('/tools/buyer-record.html');set(w,'company','测试企业');set(w,'stage','对方拒绝，停止跟进');w.document.getElementById('worksheet').requestSubmit();check('rejection reminder',w.document.getElementById('result-text').value.includes('请停止主动跟进'));
+for(const width of [375,390,768,1280]){frame.style.width=width+'px';for(const path of ['/','/about-luka.html','/tools/','/tools/export-readiness.html','/tools/buyer-record.html','/tools/export-budget.html','/case-apparel.html','/case-silicone.html','/case-kitchen-home.html']){w=await load(path);check(`${width}px no overflow ${path}`,w.document.documentElement.scrollWidth<=w.innerWidth);check(`one h1 ${path}`,w.document.querySelectorAll('h1').length===1);for(const input of w.document.querySelectorAll('input,select,textarea'))check(`label ${path} ${input.id}`,!!w.document.querySelector('label[for="'+input.id+'"]'));}}
+report.textContent=JSON.stringify({status:'PASS',count:results.length,results},null,2);
+}catch(e){report.textContent=JSON.stringify({status:'FAIL',error:e.message,results},null,2)}
+})();
+</script></body></html>
