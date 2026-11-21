@@ -23,7 +23,7 @@ let printed=false;w.print=()=>{printed=true};w.document.getElementById('print-re
 Object.defineProperty(w.navigator,'clipboard',{value:{writeText:()=>Promise.reject(new Error('blocked'))},configurable:true});w.document.getElementById('copy-result').click();await new Promise(r=>setTimeout(r,10));check('clipboard failure has fallback',w.document.getElementById('tool-status').textContent.includes('自动复制不可用'));
 w=await load('/tools/buyer-record.html');set(w,'company','测试企业');set(w,'stage','对方拒绝，停止跟进');w.document.getElementById('worksheet').requestSubmit();check('rejection reminder',w.document.getElementById('result-text').value.includes('请停止主动跟进'));
 for(const width of [375,390,768,1280]){frame.style.width=width+'px';for(const path of ['/','/about-luka.html','/tools/','/tools/export-readiness.html','/tools/buyer-record.html','/tools/export-budget.html','/case-apparel.html','/case-silicone.html','/case-kitchen-home.html']){w=await load(path);check(`${width}px no overflow ${path}`,w.document.documentElement.scrollWidth<=w.innerWidth);check(`one h1 ${path}`,w.document.querySelectorAll('h1').length===1);for(const input of w.document.querySelectorAll('input,select,textarea'))check(`label ${path} ${input.id}`,!!w.document.querySelector('label[for="'+input.id+'"]'));}}
-report.textContent=JSON.stringify({status:'PASS',count:results.length,results},null,2);
-}catch(e){report.textContent=JSON.stringify({status:'FAIL',error:e.message,results},null,2)}
+report.textContent=JSON.stringify({status:'PASS',count:results.length},null,2);
+}catch(e){report.textContent=JSON.stringify({status:'FAIL',error:e.message,count:results.length,failed:results.filter(r=>!r.pass)},null,2)}
 })();
 </script></body></html>

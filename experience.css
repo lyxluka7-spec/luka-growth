@@ -23,6 +23,12 @@ input[aria-invalid=true]{border:2px solid #ad2727}
 #budget-summary p{padding:14px;background:#f4ecdf;border-radius:10px}
 #result-text{margin-top:12px;font-size:16px;white-space:pre-wrap}
 [hidden]{display:none!important}
+.draft-controls{padding:20px;background:#f4ecdf;border-radius:16px;margin:24px 0}.draft-controls .actions{margin:16px 0}
+.consultation-summary{margin-top:28px;padding-top:24px;border-top:1px solid var(--line)}.consultation-summary button{margin-top:14px}
+.worksheet-example{padding:12px 0}.worksheet-example details{border-bottom:0}.worksheet-example button{margin-top:16px}
+.mobile-contact{display:none}
+@media(max-width:600px){body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}.mobile-contact{position:fixed;bottom:0;left:0;right:0;z-index:3;display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));background:#fffcf7;border-top:1px solid var(--line);box-shadow:0 -3px 14px #20221f0a}.mobile-contact a,.mobile-contact button{display:flex;align-items:center;justify-content:center;min-height:48px;text-align:center;font-size:13px;line-height:1.5;padding:8px;border-radius:12px;text-decoration:none}.mobile-contact a{background:var(--ink);color:white}.mobile-contact button{background:white;border:1px solid var(--ink);color:var(--ink)}.editing-field .mobile-contact,.contact-in-view .mobile-contact{display:none}.draft-controls{padding:18px 14px}.draft-controls button{width:100%}}
 @media(max-width:760px){.home-hero{gap:24px;grid-template-columns:minmax(0,1fr) 180px;padding:30px 0}.form-grid{grid-template-columns:1fr}}
 @media(max-width:600px){.home-hero{display:block}.home-photo{display:none}fieldset{padding:18px 14px}.cost-item{padding:16px 12px}.tool-actions button{width:100%}legend{font-size:19px}}
 @media print{header,footer,.skip,.hero,.breadcrumb,.privacy-note,#worksheet,main>section:not(#result),#contact{display:none!important}#result{display:block!important;border:0;padding:0}.wrap{max-width:none;padding:0}#result-text{display:none}#print-text{display:block!important;white-space:pre-wrap;overflow-wrap:anywhere;font:12pt/1.6 sans-serif}body{background:#fff;color:#000}}
+@media print{.mobile-contact,.consultation-summary,#result>label{display:none!important}body{padding-bottom:0}}
