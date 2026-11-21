@@ -32,3 +32,6 @@ input[aria-invalid=true]{border:2px solid #ad2727}
 @media(max-width:600px){.home-hero{display:block}.home-photo{display:none}fieldset{padding:18px 14px}.cost-item{padding:16px 12px}.tool-actions button{width:100%}legend{font-size:19px}}
 @media print{header,footer,.skip,.hero,.breadcrumb,.privacy-note,#worksheet,main>section:not(#result),#contact{display:none!important}#result{display:block!important;border:0;padding:0}.wrap{max-width:none;padding:0}#result-text{display:none}#print-text{display:block!important;white-space:pre-wrap;overflow-wrap:anywhere;font:12pt/1.6 sans-serif}body{background:#fff;color:#000}}
 @media print{.mobile-contact,.consultation-summary,#result>label{display:none!important}body{padding-bottom:0}}
+
+/* Tool cards are direct sections below the page heading. */
+.tool-grid .card h2{font-size:21px;line-height:1.5;margin:8px 0 14px}
